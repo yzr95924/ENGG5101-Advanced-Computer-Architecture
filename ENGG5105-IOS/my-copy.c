@@ -41,9 +41,39 @@ enum{
   OP_ADDI,
   OP_MOVEREG,
   OP_MOVEI,
-  
+  OP_LW,
+  OP_SW,
+  OP_BLEZ,
+  OP_LA,
+  OP_PUSH,
+  OP_POP,
+  OP_ADD,
+  OP_JMP,
+  OP_IRET,
+  OP_PUT,
+  OP_NONE = 0xff,
 }
 
+int computer_load_init(COMPUTER*, char*);
+int cpu_cycle(COMPUTER*);
+
+int print_cpu(COMPUTER*);
+int print_memory(COMPUTER*);
+int print_instruction(int, uint32_t);
+
+int fetch(COMPUTER*);
+int decode(uint32_t, uint8_t*, uint8_t*, uint8_t*,uint8_t*);
+int execute(COMPUTER*, uint8_t*, uint8_t*, uint8_t*, uint8_t*);
+int timer_tick(COMPUTER*);
+int check_interrupt(COMPUTER*);
+
+int main(int argc, char** args)
+{
+
+  if(argc != 3){
+    printf()
+  }
+}
 
 
 int print_instruction(int i, uint32_t inst)
