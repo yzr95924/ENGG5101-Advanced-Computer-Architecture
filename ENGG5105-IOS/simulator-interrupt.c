@@ -137,6 +137,8 @@ int fetch(COMPUTER * cp)
 	//Fetch the instruction to IR from the memory pointed by PC 
 
 	/* Your implemenation here*/
+  
+  
 
 	return 0;
 }
