@@ -265,7 +265,7 @@ int execute(COMPUTER *cp, uint8_t * p_opcode, uint8_t * p_sreg, uint8_t * p_treg
       cp->cpu.counter ++;
       break;
     default:
-      printf("This is an invalid instruction!!!")
+      printf("This is an invalid instruction!!!");
       break;
   }
 

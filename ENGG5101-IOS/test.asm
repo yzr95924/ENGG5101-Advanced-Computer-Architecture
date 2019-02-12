@@ -19,7 +19,7 @@ loop:
 
 	;Save the result back to count (memeory)
 	;R0 <- the addr. of count
-	movei R0, 1
+	;movei R0, 1
 	;Mem{R0+0} <- R2 (the value for count)
 	sw R0, R2, 0
 
