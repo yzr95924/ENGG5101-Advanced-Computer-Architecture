@@ -288,6 +288,10 @@ int check_interrupt(COMPUTER* cp)
 	/* Your implemenation here*/
   if(((cp->cpu.PSR & PSR_INT_EN) == PSR_INT_EN) && 
       ((cp->cpu.PSR & PSR_INT_PEND) == PSR_INT_PEND)){
+      //clear up the interrupt bit
+      cp->cpu.PSR = cp->cpu.PSR & (~PSR_INT_PEND);
+      
+      
       // saving PSR and PC onto the stack;
       printf("Enter the check_interrupt!\n");
       cp->cpu.SP = cp->cpu.SP - 1;
@@ -295,12 +299,9 @@ int check_interrupt(COMPUTER* cp)
       cp->cpu.SP = cp->cpu.SP - 1;
       cp->memory.addr[cp->cpu.SP] = cp->cpu.PC;
 
-      //clear up the interrupt bit
-      cp->cpu.PSR = cp->cpu.PSR ^ PSR_INT_PEND;
-      
       //disable the interrupt 
-      cp->cpu.PSR = cp->cpu.PSR ^ PSR_INT_EN;
-
+      //cp->cpu.PSR = cp->cpu.PSR ^ PSR_INT_EN;
+      cp->cpu.PSR = cp->cpu.PSR & (~PSR_INT_EN);
       //Jump to the interrupt handler;
       cp->cpu.PC = cp->memory.addr[0];
   }
