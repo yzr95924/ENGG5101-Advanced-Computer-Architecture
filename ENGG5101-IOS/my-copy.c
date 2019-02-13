@@ -142,9 +142,6 @@ int fetch(COMPUTER * cp)
 
 	/* Your implemenation here*/
   cp->cpu.IR = cp->memory.addr[cp->cpu.PC];
-  if(cp->cpu.IR == NULL){
-    return -1;
-  }
   print_instruction((int)cp->cpu.counter, cp->cpu.IR);
 	return 0;
 }
@@ -181,32 +178,32 @@ int execute(COMPUTER *cp, uint8_t * p_opcode, uint8_t * p_sreg, uint8_t * p_treg
       cp->cpu.PC ++;
       break;
     case OP_ADDI:
-      printf("Instruction: addi R%d, R%d, %d\n", *p_sreg, *p_treg, *p_imm);
+      printf("Instruction: addi R%d,R%d,%d\n", *p_sreg, *p_treg, *p_imm);
       cp->cpu.R[*p_treg] = cp->cpu.R[*p_sreg] + *p_imm;
       cp->cpu.PC ++;
       break;
     case OP_MOVEREG:
-      printf("Instruction: move_reg R%d, R%d\n", *p_sreg, *p_treg);
+      printf("Instruction: move_reg R%d,R%d\n", *p_sreg, *p_treg);
       cp->cpu.R[*p_treg] = cp->cpu.R[*p_sreg];
       cp->cpu.PC ++;
       break;
     case OP_MOVEI:
-      printf("Instruction: movei R%d, %d\n", *p_treg, *p_imm);
+      printf("Instruction: movei R%d,%d\n", *p_treg, *p_imm);
       cp->cpu.R[*p_treg] = *p_imm;
       cp->cpu.PC ++;
       break;
     case OP_LW:
-      printf("Instruction: lw R%d, R%d, %d\n", *p_sreg, *p_treg, *p_imm);
+      printf("Instruction: lw R%d,R%d,%d\n", *p_sreg, *p_treg, *p_imm);
       cp->cpu.R[*p_treg] = cp->memory.addr[(cp->cpu.R[*p_sreg] + *p_imm)];
       cp->cpu.PC ++;
       break;
     case OP_SW:
-      printf("Instruction: sw R%d, R%d, %d\n", *p_sreg, *p_treg, *p_imm);
+      printf("Instruction: sw R%d,R%d,%d\n", *p_sreg, *p_treg, *p_imm);
       cp->memory.addr[(*p_sreg + *p_imm)] = cp->cpu.R[*p_treg];
       cp->cpu.PC ++;
       break;
     case OP_BLEZ:
-      printf("Instruction: blez R%d, %d\n", *p_sreg, *p_imm);
+      printf("Instruction: blez R%d,%d\n", *p_sreg, *p_imm);
       if(cp->cpu.R[*p_sreg] <= 0){
         cp->cpu.PC = cp->cpu.PC + 1 + *p_imm;
       }else{
@@ -214,18 +211,19 @@ int execute(COMPUTER *cp, uint8_t * p_opcode, uint8_t * p_sreg, uint8_t * p_treg
       }
       break;
     case OP_LA:
-      printf("Instruction: la R%d, %d\n", *p_treg, *p_imm);
+      printf("Instruction: la R%d,%d\n", *p_treg, *p_imm);
       cp->cpu.R[*p_treg] = cp->cpu.PC + 1 + *p_imm;
       cp->cpu.PC ++;
       break;
     case OP_ADD:
-      printf("Instruction: add R%d, R%d\n", *p_sreg, *p_treg);
+      printf("Instruction: add R%d,R%d\n", *p_sreg, *p_treg);
       cp->cpu.R[*p_treg] = cp->cpu.R[*p_treg] + cp->cpu.R[*p_sreg];
       cp->cpu.PC ++;
       break;
     case OP_JMP:
       printf("Instruction: jmp %d\n", *p_imm);
-      cp->cpu.PC = cp->cpu.PC + 1 + *p_imm;
+      cp->cpu.PC = cp->cpu.PC + 1 
+      + *p_imm;
       break;
     case OP_PUSH:
       printf("Instruction: push R%d\n", *p_sreg);
