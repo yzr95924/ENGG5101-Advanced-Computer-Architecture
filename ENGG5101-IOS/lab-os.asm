@@ -75,23 +75,23 @@ save_context:
     push    R2                  ; 45
     push    R3                  ; 46
 
-    la      R0, current
-    lw      R0, R3, 0           ; R3 <- current process id
+    la      R0, current         ; 47
+    lw      R0, R3, 0           ; R3 <- current process id 48
 
     ;; save sp
-    la      R0, process_control_block 
-    add     R3, R0              ; R0 <- addr of process_control_block[current]
-    sw      R0, sp, 0           ; process_control_block[current] <- sp
+    la      R0, process_control_block ; 49
+    add     R3, R0              ; R0 <- addr of process_control_block[current] 50
+    sw      R0, sp, 0           ; process_control_block[current] <- sp 51
     ;; set R2 as the next process id
-    movei    R2, 1              ; if R3 == 0 then R2 <- 1 else 0
-    blez    R3, switch_proc
-    movei    R2, 0
+    movei    R2, 1              ; if R3 == 0 then R2 <- 1 else 0 52
+    blez    R3, switch_proc     ; 53
+    movei    R2, 0              ; 54
 switch_proc:                 ; R2 = next process id
     ;; update current process id
-    la      R0, current
-    sw      R0, R2, 0           ; current <- R2
+    la      R0, current         ; 55
+    sw      R0, R2, 0           ; current <- R2 56
     ;; restore sp
-    la      R0, process_control_block 
+    la      R0, process_control_block  ; 57
     add     R2, R0              ; R0 <- addr of process_control_block[next]
     lw      R0, sp, 0           ; sp <- process_control_block[next]
     ;; restore general purpose registers

@@ -197,7 +197,7 @@ int execute(COMPUTER *cp, uint8_t * p_opcode, uint8_t * p_sreg, uint8_t * p_treg
       break;
     case OP_SW:
       printf("Instruction: sw R%d,R%d,%d\n", *p_sreg, *p_treg, *p_imm);
-      cp->memory.addr[(*p_sreg + *p_imm)] = cp->cpu.R[*p_treg];
+      cp->memory.addr[(cp->cpu.R[*p_sreg] + *p_imm)] = cp->cpu.R[*p_treg];
       cp->cpu.PC ++;
       break;
     case OP_BLEZ:
