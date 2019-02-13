@@ -113,8 +113,7 @@ int cpu_cycle(COMPUTER * cp)
 	int8_t  immediate;
 
   printf("\nBefore\n");
-  printf("CPU Registers: PC-%d IR-0x%x, PSR-0x%x, R[0]-%d, R[1]-%d, R[2]-%d, R[3]-%d\n",
-          cp->cpu.PC, cp->cpu.IR, cp->cpu.PSR, cp->cpu.R[0], cp->cpu.R[1], cp->cpu.R[2], cp->cpu.R[3]);
+  print_cpu(cp);
 	if( fetch(cp) < 0)
 		return -1;
 
@@ -130,8 +129,7 @@ int cpu_cycle(COMPUTER * cp)
     	if (check_interrupt(cp) < 0)
         	return -1;
   printf("After\n");
-  printf("CPU Registers: PC-%d IR-0x%x, PSR-0x%x, R[0]-%d, R[1]-%d, R[2]-%d, R[3]-%d\n",
-          cp->cpu.PC, cp->cpu.IR, cp->cpu.PSR, cp->cpu.R[0], cp->cpu.R[1], cp->cpu.R[2], cp->cpu.R[3]);
+  print_cpu(cp);
 	return 0;
 }
 
