@@ -175,37 +175,31 @@ int execute(COMPUTER *cp, uint8_t * p_opcode, uint8_t * p_sreg, uint8_t * p_treg
     case OP_NOP:
       printf("This instruction is OP_NOP\n");
       cp->cpu.PC ++;
-      cp->cpu.counter ++;
       break;
     case OP_ADDI:
       printf("This instruction is OP_ADDI\n");
       cp->cpu.R[*p_treg] = cp->cpu.R[*p_sreg] + *p_imm;
       cp->cpu.PC ++;
-      cp->cpu.counter ++;
       break;
     case OP_MOVEREG:
       printf("This instruction is OP_MOVEREG\n");
       cp->cpu.R[*p_treg] = cp->cpu.R[*p_sreg];
       cp->cpu.PC ++;
-      cp->cpu.counter ++;
       break;
     case OP_MOVEI:
       printf("This instruction is OP_MOVEI\n");
       cp->cpu.R[*p_treg] = *p_imm;
       cp->cpu.PC ++;
-      cp->cpu.counter ++;
       break;
     case OP_LW:
       printf("This instruction is OP_LW\n");
       cp->cpu.R[*p_treg] = cp->memory.addr[(cp->cpu.R[*p_sreg] + *p_imm)];
       cp->cpu.PC ++;
-      cp->cpu.counter ++;
       break;
     case OP_SW:
       printf("This instruction is OP_SW\n");
       cp->memory.addr[(*p_sreg + *p_imm)] = cp->cpu.R[*p_treg];
       cp->cpu.PC ++;
-      cp->cpu.counter ++;
       break;
     case OP_BLEZ:
       printf("This instruction is OP_BLEZ\n");
@@ -214,38 +208,32 @@ int execute(COMPUTER *cp, uint8_t * p_opcode, uint8_t * p_sreg, uint8_t * p_treg
       }else{
         cp->cpu.PC ++;
       }
-      cp->cpu.counter ++;
       break;
     case OP_LA:
       printf("This instruction is OP_LA\n");
       cp->cpu.R[*p_treg] = cp->cpu.PC + 1 + *p_imm;
       cp->cpu.PC ++;
-      cp->cpu.counter ++;
       break;
     case OP_ADD:
       printf("This instruction is OP_ADD\n");
       cp->cpu.R[*p_treg] = cp->cpu.R[*p_treg] + cp->cpu.R[*p_sreg];
       cp->cpu.PC ++;
-      cp->cpu.counter ++;
       break;
     case OP_JMP:
       printf("This instruction is OP_JMP\n");
       cp->cpu.PC = cp->cpu.PC + 1 + *p_imm;
-      cp->cpu.counter ++;
       break;
     case OP_PUSH:
       printf("This instruction is OP_PUSH\n");
       cp->cpu.SP = cp->cpu.SP - 1;
       cp->memory.addr[cp->cpu.SP] = cp->cpu.R[*p_sreg];
       cp->cpu.PC ++;
-      cp->cpu.counter ++;
       break;
     case OP_POP:
       printf("This instruction is OP_POP\n");
       cp->cpu.R[*p_treg] = cp->memory.addr[cp->cpu.SP];
       cp->cpu.SP = cp->cpu.SP + 1;
       cp->cpu.PC ++;
-      cp->cpu.counter ++;
       break;
     case OP_IRET:
       printf("This instruction is OP_IRET\n");
@@ -256,16 +244,15 @@ int execute(COMPUTER *cp, uint8_t * p_opcode, uint8_t * p_sreg, uint8_t * p_treg
       cp->cpu.PSR = cp->memory.addr[cp->cpu.SP];
       cp->cpu.SP = cp->cpu.SP + 1;
       //TODO: PC++?
-      cp->cpu.counter ++;
       break;
     case OP_PUT:
       printf("This instruction is OP_PUT\n");
       printf("R[%d]: %d", *p_sreg, cp->cpu.R[*p_sreg]);
       cp->cpu.PC ++;
-      cp->cpu.counter ++;
       break;
     default:
       printf("This is an invalid instruction!!!");
+      return -1;
       break;
   }
 
@@ -280,7 +267,11 @@ int timer_tick(COMPUTER* cp)
 	/* Your implemenation here*/
   cp->cpu.counter ++;
   if(cp->cpu.counter % 5000 == 0){
-    //TODO:
+    //TODO: set up the interrupt pending bit if the interrupt enable bit is 1
+    if((cp->cpu.PSR & PSR_INT_EN) == PSR_INT_EN){
+      // the interrupt is enable.
+      cp->cpu.PSR = cp->cpu.PSR | PSR_INT_PEND;
+    }
   }
 	return 0;
 }
@@ -299,6 +290,23 @@ int check_interrupt(COMPUTER* cp)
 
 
 	/* Your implemenation here*/
+  if(((cp->cpu.PSR & PSR_INT_EN) == PSR_INT_EN) && 
+      ((cp->cpu.PSR & PSR_INT_PEND) == PSR_INT_PEND)){
+      // saving PSR and PC onto the stack;
+      cp->cpu.SP = cp->cpu.SP - 1;
+      cp->memory.addr[cp->cpu.SP] = cp->cpu.PSR;
+      cp->cpu.SP = cp->cpu.SP - 1;
+      cp->memory.addr[cp->cpu.SP] = cp->cpu.PC;
+
+      //clear up the interrupt bit
+      cp->cpu.PSR = cp->cpu.PSR ^ PSR_INT_PEND;
+      
+      //disable the interrupt 
+      cp->cpu.PSR = cp->cpu.PSR ^ PSR_INT_EN;
+
+      //Jump to the interrupt handler;
+      cp->cpu.PC = cp->memory.addr[0];
+  }
 
     	return 0;
 }
