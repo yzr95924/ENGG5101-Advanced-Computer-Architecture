@@ -141,7 +141,7 @@ int fetch(COMPUTER * cp)
   if(cp->cpu.IR == NULL){
     return -1;
   }
-  print_instruction((int)cp->cpu.PC, cp->cpu.IR);
+  print_instruction((int)cp->cpu.counter, cp->cpu.IR);
 	return 0;
 }
 
