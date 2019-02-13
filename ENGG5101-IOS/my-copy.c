@@ -247,7 +247,7 @@ int execute(COMPUTER *cp, uint8_t * p_opcode, uint8_t * p_sreg, uint8_t * p_treg
       break;
     case OP_PUT:
       printf("This instruction is OP_PUT\n");
-      printf("R[%d]: %d", *p_sreg, cp->cpu.R[*p_sreg]);
+      printf("R[%d]: %c\n", *p_sreg, cp->cpu.R[*p_sreg]);
       cp->cpu.PC ++;
       break;
     default:
