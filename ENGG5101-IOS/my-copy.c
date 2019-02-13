@@ -142,7 +142,7 @@ int fetch(COMPUTER * cp)
 
 	/* Your implemenation here*/
   cp->cpu.IR = cp->memory.addr[cp->cpu.PC];
-  print_instruction((int)cp->cpu.counter, cp->cpu.IR);
+  //print_instruction((int)cp->cpu.counter, cp->cpu.IR);
 	return 0;
 }
 
