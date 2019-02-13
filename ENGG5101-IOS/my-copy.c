@@ -94,14 +94,14 @@ int main(int argc, char ** args)
 
 	// Execute CPU cyles: fetch, decode, execution, and increment PC; Repeat
 	while(1){
-		//printf("\n\nBefore\n");
-		//print_cpu(&comp);
+		printf("\n\nBefore\n");
+		print_cpu(&comp);
 
 		if( cpu_cycle(&comp) < 0 )
 			break;
 
-		//printf("After\n");
-		//print_cpu(&comp);
+		printf("After\n");
+		print_cpu(&comp);
 	}
 
   	return 0;
@@ -112,8 +112,6 @@ int cpu_cycle(COMPUTER * cp)
 	uint8_t opcode, sreg, treg;
 	int8_t  immediate;
 
-  printf("\nBefore\n");
-  print_cpu(cp);
 	if( fetch(cp) < 0)
 		return -1;
 
@@ -128,8 +126,6 @@ int cpu_cycle(COMPUTER * cp)
 
     	if (check_interrupt(cp) < 0)
         	return -1;
-  printf("After\n");
-  print_cpu(cp);
 	return 0;
 }
 
@@ -168,40 +164,40 @@ int execute(COMPUTER *cp, uint8_t * p_opcode, uint8_t * p_sreg, uint8_t * p_treg
   switch (*p_opcode)
   {
     case OP_HALT:
-      printf("Instruction: halt\n");
+      //printf("Instruction: halt\n");
       exit(0);
       break;
     case OP_NOP:
-      printf("Instruction: NOP\n");
+      //printf("Instruction: NOP\n");
       cp->cpu.PC ++;
       break;
     case OP_ADDI:
-      printf("Instruction: addi R%d,R%d,%d\n", *p_sreg, *p_treg, *p_imm);
+      //printf("Instruction: addi R%d,R%d,%d\n", *p_sreg, *p_treg, *p_imm);
       cp->cpu.R[*p_treg] = cp->cpu.R[*p_sreg] + *p_imm;
       cp->cpu.PC ++;
       break;
     case OP_MOVEREG:
-      printf("Instruction: move_reg R%d,R%d\n", *p_sreg, *p_treg);
+      //printf("Instruction: move_reg R%d,R%d\n", *p_sreg, *p_treg);
       cp->cpu.R[*p_treg] = cp->cpu.R[*p_sreg];
       cp->cpu.PC ++;
       break;
     case OP_MOVEI:
-      printf("Instruction: movei R%d,%d\n", *p_treg, *p_imm);
+      //printf("Instruction: movei R%d,%d\n", *p_treg, *p_imm);
       cp->cpu.R[*p_treg] = *p_imm;
       cp->cpu.PC ++;
       break;
     case OP_LW:
-      printf("Instruction: lw R%d,R%d,%d\n", *p_sreg, *p_treg, *p_imm);
+      //printf("Instruction: lw R%d,R%d,%d\n", *p_sreg, *p_treg, *p_imm);
       cp->cpu.R[*p_treg] = cp->memory.addr[(cp->cpu.R[*p_sreg] + *p_imm)];
       cp->cpu.PC ++;
       break;
     case OP_SW:
-      printf("Instruction: sw R%d,R%d,%d\n", *p_sreg, *p_treg, *p_imm);
+      //printf("Instruction: sw R%d,R%d,%d\n", *p_sreg, *p_treg, *p_imm);
       cp->memory.addr[(cp->cpu.R[*p_sreg] + *p_imm)] = cp->cpu.R[*p_treg];
       cp->cpu.PC ++;
       break;
     case OP_BLEZ:
-      printf("Instruction: blez R%d,%d\n", *p_sreg, *p_imm);
+      //printf("Instruction: blez R%d,%d\n", *p_sreg, *p_imm);
       if(cp->cpu.R[*p_sreg] <= 0){
         cp->cpu.PC = cp->cpu.PC + 1 + *p_imm;
       }else{
@@ -209,34 +205,33 @@ int execute(COMPUTER *cp, uint8_t * p_opcode, uint8_t * p_sreg, uint8_t * p_treg
       }
       break;
     case OP_LA:
-      printf("Instruction: la R%d,%d\n", *p_treg, *p_imm);
+      //printf("Instruction: la R%d,%d\n", *p_treg, *p_imm);
       cp->cpu.R[*p_treg] = cp->cpu.PC + 1 + *p_imm;
       cp->cpu.PC ++;
       break;
     case OP_ADD:
-      printf("Instruction: add R%d,R%d\n", *p_sreg, *p_treg);
+      //printf("Instruction: add R%d,R%d\n", *p_sreg, *p_treg);
       cp->cpu.R[*p_treg] = cp->cpu.R[*p_treg] + cp->cpu.R[*p_sreg];
       cp->cpu.PC ++;
       break;
     case OP_JMP:
-      printf("Instruction: jmp %d\n", *p_imm);
-      cp->cpu.PC = cp->cpu.PC + 1 
-      + *p_imm;
+      //printf("Instruction: jmp %d\n", *p_imm);
+      cp->cpu.PC = cp->cpu.PC + 1 + *p_imm;
       break;
     case OP_PUSH:
-      printf("Instruction: push R%d\n", *p_sreg);
+      //printf("Instruction: push R%d\n", *p_sreg);
       cp->cpu.SP = cp->cpu.SP - 1;
       cp->memory.addr[cp->cpu.SP] = cp->cpu.R[*p_sreg];
       cp->cpu.PC ++;
       break;
     case OP_POP:
-      printf("Instruction: pop R%d\n", *p_treg);
+      //printf("Instruction: pop R%d\n", *p_treg);
       cp->cpu.R[*p_treg] = cp->memory.addr[cp->cpu.SP];
       cp->cpu.SP = cp->cpu.SP + 1;
       cp->cpu.PC ++;
       break;
     case OP_IRET:
-      printf("Instruction: iret\n");
+      //printf("Instruction: iret\n");
       // PC <- Pop()
       cp->cpu.PC = cp->memory.addr[cp->cpu.SP];
       cp->cpu.SP = cp->cpu.SP + 1;
@@ -246,12 +241,12 @@ int execute(COMPUTER *cp, uint8_t * p_opcode, uint8_t * p_sreg, uint8_t * p_treg
       //TODO: PC++?
       break;
     case OP_PUT:
-      printf("Instruction: put R%d\n", *p_sreg);
-      printf("R[%d]: %c\n", *p_sreg, cp->cpu.R[*p_sreg]);
+      //printf("Instruction: put R%d\n", *p_sreg);
+      //printf("R[%d]: %c\n", *p_sreg, cp->cpu.R[*p_sreg]);
       cp->cpu.PC ++;
       break;
     default:
-      printf("This is an invalid instruction!!!");
+      //printf("This is an invalid instruction!!!");
       return -1;
       break;
   }
