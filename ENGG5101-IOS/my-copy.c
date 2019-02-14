@@ -291,7 +291,6 @@ int check_interrupt(COMPUTER* cp)
       //clear up the interrupt bit
       cp->cpu.PSR = cp->cpu.PSR & (~PSR_INT_PEND);
       
-      
       // saving PSR and PC onto the stack;
       printf("Enter the check_interrupt!\n");
       cp->cpu.SP = cp->cpu.SP - 1;
