@@ -113,9 +113,13 @@ save_context:
     add     R3, R0              ; R0 <- addr of process_control_block[current]
     sw      R0, sp, 0           ; process_control_block[current] <- sp
     ;; set R2 as the next process id
-    movei    R2, 2              ; if R3 == 0 then R2 <- 1 else 0
+    movei    R2, 1              ; if R3 == 0 then R2 <- 1 else 0
+    blez    R3, switch_proc
+    movei    R2, 2
+    addi    R3, R3, -1
     blez    R3, switch_proc
     movei    R2, 0
+     
 switch_proc:                 ; R2 = next process id
     ;; update current process id
     la      R0, current
