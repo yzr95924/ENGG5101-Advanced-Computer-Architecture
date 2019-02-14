@@ -26,12 +26,21 @@ B_stack_top:
 .word 0
 C_stack_top:
 
+.word 0
+.word 0
+.word 0
+.word 0
+.word 0
+.word 0
+D_stack_top:
+
 current:
 .word 0                         ; current proc num
 process_control_block:
 .word 0                         ; saved sp(A)
 .word 0                         ; saved sp(B)
 .word 0                         ; saved sp(C)
+.word 0                         ; saved sp(D)
 
 ;;; .text
 OS_start:
@@ -82,6 +91,27 @@ OS_start:
     addi    R2, R2, 2		; sp is saved to process_control_block[2] for context switch 
     sw      R2, sp, 0
 
+    ;; setup initial context for Process D
+    la      sp, D_stack_top     ; sp <- C_stack_top
+    ;; save PSR and PC
+    movei   R1, 1               ; bit 1: Interrupt Enabled
+    push    R1
+    la      R1, proc_start      ; initial PC points to process entry point
+    push    R1
+
+    ;; save(clear) general purpose registers
+    movei   R1, 0
+    push    R1			; Push for R0
+    push    R1			; Push for R1
+    push    R1			; Push for R2
+    movei   R3, 68              ; R3 <- 'D'
+    push    R3                  ; save R3 so that after restoring the context, proc A should see 'A' and proc B should see 'B'               
+
+    ;; save sp 
+    la      R2, process_control_block
+    addi    R2, R2, 3		; sp is saved to process_control_block[3] for context switch 
+    sw      R2, sp, 0
+
     ;; Execute Process A first
     ;;   First, set up the current process id (0) for Process A 
     movei   R0, 0		
@@ -116,6 +146,9 @@ save_context:
     movei    R2, 1              ; if R3 == 0 then R2 <- 1 else 0
     blez    R3, switch_proc
     movei    R2, 2
+    addi    R3, R3, -1
+    blez    R3, switch_proc
+    movei    R2, 3
     addi    R3, R3, -1
     blez    R3, switch_proc
     movei    R2, 0
